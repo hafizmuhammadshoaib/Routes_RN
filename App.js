@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import MapScreen from "./src/Screens/MapScreen/MapScreen";
 import { createStackNavigator } from "react-navigation"
+import MyMapsView from './src/Screens/MapScreen/MyMapsView';
 
 
 export default class App extends Component {
@@ -27,8 +28,13 @@ export default class App extends Component {
   }
 }
 const RootStack = createStackNavigator({
-  mapScreen: MapScreen
-})
+  mapScreen: MyMapsView
+}, {
+    navigationOptions: {
+      headerTitle: 'Routes',
+
+    }
+  })
 const styles = StyleSheet.create({
   container: {
     flex: 1,
