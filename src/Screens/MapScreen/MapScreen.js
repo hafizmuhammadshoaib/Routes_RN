@@ -3,6 +3,7 @@ import {
     Platform, StyleSheet, Text, View,
     Dimensions, PermissionsAndroid
 } from 'react-native';
+
 import MapView from "react-native-maps";
 const { height, width, fontScale, scale } = Dimensions.get("window")
 
