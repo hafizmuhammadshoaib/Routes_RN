@@ -14,6 +14,7 @@ import {
 import MapScreen from "./src/Screens/MapScreen/MapScreen";
 import { createStackNavigator } from "react-navigation"
 import MyMapsView from './src/Screens/MapScreen/MyMapsView';
+import SignIn from './src/Screens/SignIn/SignIn';
 
 
 export default class App extends Component {
@@ -28,8 +29,10 @@ export default class App extends Component {
   }
 }
 const RootStack = createStackNavigator({
-  mapScreen: MyMapsView
+  mapScreen: MyMapsView,
+  signIn: SignIn
 }, {
+    initialRouteName: "signIn",
     navigationOptions: {
       headerTitle: 'Routes',
 
