@@ -1,7 +1,7 @@
 import actionTypes from '../actionTypes';
 import { startWith } from 'rxjs/operator/startWith';
-var parseString = require('react-native-xml2js').parseString;
-var jsonData = ""
+
+
 let INITIAL_STATE = {
     isProgress: false,
     isError: false,

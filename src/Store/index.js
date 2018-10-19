@@ -21,6 +21,8 @@ const rootReducer = combineReducers({
 
 export const rootEpic = combineEpics(
   // more epics functions go here
+  AuthEpic.signIn,
+  AuthEpic.signUp
 );
 
 const epicMiddleware = createEpicMiddleware(rootEpic);
