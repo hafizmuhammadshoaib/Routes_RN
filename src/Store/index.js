@@ -22,7 +22,8 @@ const rootReducer = combineReducers({
 export const rootEpic = combineEpics(
   // more epics functions go here
   AuthEpic.signIn,
-  AuthEpic.signUp
+  AuthEpic.signUp,
+  DBEpic.getBusRoute
 );
 
 const epicMiddleware = createEpicMiddleware(rootEpic);

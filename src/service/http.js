@@ -8,6 +8,7 @@ export default class HttpService {
     static get(url, headers = null) {
         return Observable.ajax({
             url,
+            headers,
             method: 'GET',
             async: true,
             crossDomain: true,

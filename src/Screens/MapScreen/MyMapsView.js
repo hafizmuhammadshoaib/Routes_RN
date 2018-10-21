@@ -3,33 +3,43 @@ import {
     Alert,
     Platform,
     StyleSheet,
-    PermissionsAndroid, View, Dimensions, Text, TouchableOpacity, AsyncStorage
+    PermissionsAndroid, View, Dimensions, Image, FlatList, Text, TouchableOpacity, AsyncStorage
 } from 'react-native';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Fab, Button, Icon, Drawer } from "native-base";
-const { height, width } = Dimensions.get("window");
+const { height, width, fontScale, scale } = Dimensions.get("window");
 import MapView from 'react-native-maps';
 import Polyline from '@mapbox/polyline';
 import Feather from "react-native-vector-icons/Feather";
 import busRoute from "./busroutes";
 import AuthActions from '../../Store/Actions/AuthActions/AuthActions';
 import { connect } from "react-redux";
-
+import DBActions from '../../Store/Actions/DBActions/DBActions';
+import Ionicons from "react-native-vector-icons/Ionicons";
+const drawerDataArray = [{ name: "Live Tracking", icon: require("../../../assets/images/gps-route.png") },
+{ name: "Bus Route", icon: require("../../../assets/images/route.png") },
+{ name: "Bus Info", icon: require("../../../assets/images/info.png") },
+{ name: "Notification", icon: require("../../../assets/images/notification.png") },
+{ name: "Settings", icon: require("../../../assets/images/settings-2.png") }];
+let ref;
 const mapStateToProps = state => {
     console.log(state);
     return {
-        isProgress: state.authReducer["isProgress"],
+        isProgress_db: state.dbReducer["isProgress_db"],
         user: state.authReducer['user'],
-        isError: state.authReducer["isError"],
-        errorText: state.authReducer["errorText"],
-        token: state.authReducer["token"]
+        isError_db: state.dbReducer["isError_db"],
+        errorText_db: state.dbReducer["errorText_db"],
+        token: state.authReducer["token"],
+        bus_route: state.dbReducer["bus_route"]
+
 
     };
 };
 const mapDispatchToProps = dispatch => {
     return {
         signOut: () => dispatch(AuthActions.signOut()),
-        setUnmountFlag: (value) => dispatch(AuthActions.setUnmountFlag(value))
+        setUnmountFlag: (value) => dispatch(AuthActions.setUnmountFlag(value)),
+        getBusRoute: (token, busName) => { dispatch(DBActions.getBusRoute(token, busName)) }
     };
 };
 
@@ -47,7 +57,7 @@ const initialRegion = {
 class MyMapView extends React.Component {
     constructor(props) {
         super(props);
-
+        ref = this;
         this.map = null;
         console.log(this.props, "props on map")
         this.state = {
@@ -66,8 +76,8 @@ class MyMapView extends React.Component {
         };
         this.drawer = null;
     }
-    async getDirections(startLoc, destinationLoc) {
-
+    getDirections = (busRoute) => {
+        console.log("get directions", busRoute)
         try {
             // let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=24.933145,67.085385&destination=25.083330,67.012572&key=AIzaSyDDmyFwVLZ7Fys0sWTDMxa7h_Dyy79BXuM`)
             // let respJson = await resp.json();
@@ -111,13 +121,22 @@ class MyMapView extends React.Component {
     componentDidMount() {
         console.log('Component did mount');
         this.requestPermission();
-        this.getDirections();
+        // this.getDirections();
+        this.props.getBusRoute(this.props.token, "HU_2");
         this.props.navigation.setParams({ "openDrawer": this.openDrawer });
     }
+    static getDerivedStateFromProps = (nextProps, prevState) => {
+        if (nextProps.bus_route.length > 0) {
+            ref.getDirections(nextProps.bus_route);
+        }
+        return null;
+    }
+
     closeDrawer = () => {
         if (this.drawer)
             this.drawer._root.close()
     };
+
     openDrawer = () => {
         if (this.drawer)
             this.drawer._root.open()
@@ -133,6 +152,7 @@ class MyMapView extends React.Component {
         }
 
     };
+
     requestPermission = async () => {
         try {
 
@@ -157,6 +177,7 @@ class MyMapView extends React.Component {
             alert(err);
         }
     }
+
     getCurrentPosition = () => {
         try {
             navigator.geolocation.getCurrentPosition(
@@ -230,12 +251,26 @@ class MyMapView extends React.Component {
                 panCloseMask={40}
                 ref={(ref) => { this.drawer = ref; }}
                 content={<View style={{ flex: 1, backgroundColor: "#fff" }} >
+                    <View style={{ flex: 0.25, backgroundColor: "#2FCC71", padding: 10 }} >
+                        <View>
+                            <Ionicons name="md-person" size={width / 5} color="#fff" style={{ alignSelf: "center" }} />
+                        </View>
 
-                    {/* <TouchableOpacity onPress={() => {
-                       
-                    }} style={{ flex: 0.1,backgroundColor:"red", marginTop: "auto", justifyContent: "center", alignItems: "center" }} >
-                        <Text style={{ textAlignVertical: "center", textDecorationLine: "underline", textDecorationStyle: "solid", textDecorationColor: "#000" }} >SignOut</Text>
-                    </TouchableOpacity> */}
+                        <View style={{ marginTop: "auto" }} >
+                            <Text style={{ fontFamily: "OpenSans-Bold", color: "#fff", fontSize: fontScale * 15 }} > {this.props.user.name} </Text>
+                            <Text style={{ fontFamily: "OpenSans-Regular", color: "#fff", fontSize: fontScale * 13 }} > {this.props.user.email} </Text>
+                        </View>
+                    </View>
+                    <View style={{ flex: 0.65, }} >
+                        <FlatList data={drawerDataArray} renderItem={({ item, index }) => (
+                            <TouchableOpacity activeOpacity={0.6} key={index} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 10, padding: 10, backgroundColor: "#f9f9f9" }} >
+                                <Image source={item.icon} style={{ width: width / 10, height: width / 10, marginRight: 17 }} resizeMode="contain" />
+                                <Text style={{ fontFamily: "OpenSans-Regular", fontSize: fontScale * 18, marginRight: "auto" }} >{item.name}</Text>
+                            </TouchableOpacity>
+                        )
+                        }
+                        />
+                    </View>
                     <View style={{ flex: 0.1, marginTop: "auto" }} >
                         <Button onPress={this.signOut} style={{ borderRadius: width / 9, width: width * 0.4, justifyContent: "center", backgroundColor: "#2FCC71", alignSelf: "center" }} ><Text style={{ color: "#fff", fontFamily: "OpenSans-Regular" }}  >Logout</Text></Button>
                     </View>
