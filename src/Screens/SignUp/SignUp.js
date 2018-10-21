@@ -119,7 +119,7 @@ class SignUp extends Component {
 
                         <Ionicons name="md-person" size={80} color="#2FCC71" style={{ borderRadius: width / 5, }} />
                     </View>
-                    <View style={{ flex: 0.8, justifyContent: "space-around", }} >
+                    <View style={{ flex: 0.92, justifyContent: "space-around", }} >
                         <View style={{ flex: 0.16, width: width * 0.9, flexDirection: "row", alignItems: "center", borderRadius: width / 9, shadowOffset: { width: 10, height: 10, }, shadowColor: '#EBECF2', shadowOpacity: 1.0, elevation: 8 }} >
 
                             <Ionicons name="ios-person" size={25} color="#2FCC71" style={{ marginLeft: 15 }} />

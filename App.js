@@ -11,7 +11,6 @@ import {
   Text,
   View
 } from 'react-native';
-import Feather from "react-native-vector-icons/Feather";
 
 import { Provider } from "react-redux";
 
@@ -43,11 +42,10 @@ const RootStack = createStackNavigator({
 }, {
     initialRouteName: "signIn",
     navigationOptions: {
+      
       headerTitle: 'Routes',
       headerTitleStyle: { fontFamily: "OpenSans-Light", fontStyle: null, },
-      headerLeft: <Feather name="menu" color="#000" size={30} style={{ alignSelf: "center" }} />,
-      headerStyle: { justifyContent: "center",alignItems:'center' }
-
+      
     }
 
   })

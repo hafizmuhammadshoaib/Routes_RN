@@ -7,6 +7,7 @@ import {
 import MapView from "react-native-maps";
 const { height, width, fontScale, scale } = Dimensions.get("window")
 
+
 export default class MapScreen extends Component {
     constructor(props) {
         super(props);
@@ -15,12 +16,15 @@ export default class MapScreen extends Component {
             longitude: 0,
         }
         this._map = null;
+
     }
     componentDidMount() {
+        
         this.requestPermission();
 
 
     }
+    
     requestPermission = async () => {
         try {
 

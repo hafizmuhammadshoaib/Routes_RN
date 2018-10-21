@@ -14,7 +14,8 @@ const mapStateToProps = state => {
         user: state.authReducer['user'],
         isError: state.authReducer["isError"],
         errorText: state.authReducer["errorText"],
-        token: state.authReducer["token"]
+        token: state.authReducer["token"],
+        unmountFlag: state.authReducer["unmountFlag"],
 
     };
 };
@@ -22,7 +23,8 @@ const mapDispatchToProps = dispatch => {
     return {
         signIn: (payload) => { dispatch(AuthActions.signIn(payload)) },
         clearError: () => dispatch(AuthActions.clearError()),
-        getTokenAndUser: (token, user) => dispatch(AuthActions.getUserAndTokenFromAsyncStorage(token, user))
+        getTokenAndUser: (token, user) => dispatch(AuthActions.getUserAndTokenFromAsyncStorage(token, user)),
+        
 
     };
 };
@@ -97,7 +99,7 @@ class SignIn extends Component {
     }
     static getDerivedStateFromProps = (props, state) => {
         console.log("user", props.user)
-        if (props.user) {
+        if (props.user && props.navigation.isFocused() && !props.unmountFlag) {
             try {
                 console.log("token", props.token)
                 // await AsyncStorage.setItem('token', token);
@@ -122,6 +124,9 @@ class SignIn extends Component {
         this._retrieveData();
 
     }
+    componentWillUnmount() {
+        console.log("component unmounted signin")
+    }
 
     render() {
         return (
@@ -132,7 +137,7 @@ class SignIn extends Component {
 
                         <Ionicons name="md-person" size={80} color="#2FCC71" style={{ borderRadius: width / 5, }} />
                     </View>
-                    <View style={{ flex: 0.6, justifyContent: "space-around", }} >
+                    <View style={{ flex: 0.75, justifyContent: "space-around", }} >
                         <View style={{ flex: 0.18, width: width * 0.9, flexDirection: "row", alignItems: "center", borderRadius: width / 9, shadowOffset: { width: 10, height: 10, }, shadowColor: '#EBECF2', shadowOpacity: 1.0, elevation: 8 }} >
 
                             <MaterialCommunityIcons name="email-outline" size={20} color="#2FCC71" style={{ marginLeft: 15 }} />

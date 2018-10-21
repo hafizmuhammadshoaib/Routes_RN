@@ -3,14 +3,36 @@ import {
     Alert,
     Platform,
     StyleSheet,
-    PermissionsAndroid, View, Dimensions, Text
+    PermissionsAndroid, View, Dimensions, Text, TouchableOpacity, AsyncStorage
 } from 'react-native';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { Fab, Button, Icon } from "native-base";
+import { Fab, Button, Icon, Drawer } from "native-base";
 const { height, width } = Dimensions.get("window");
 import MapView from 'react-native-maps';
 import Polyline from '@mapbox/polyline';
-import busRoute from "./busroutes"
+import Feather from "react-native-vector-icons/Feather";
+import busRoute from "./busroutes";
+import AuthActions from '../../Store/Actions/AuthActions/AuthActions';
+import { connect } from "react-redux";
+
+const mapStateToProps = state => {
+    console.log(state);
+    return {
+        isProgress: state.authReducer["isProgress"],
+        user: state.authReducer['user'],
+        isError: state.authReducer["isError"],
+        errorText: state.authReducer["errorText"],
+        token: state.authReducer["token"]
+
+    };
+};
+const mapDispatchToProps = dispatch => {
+    return {
+        signOut: () => dispatch(AuthActions.signOut()),
+        setUnmountFlag: (value) => dispatch(AuthActions.setUnmountFlag(value))
+    };
+};
+
 const LATITUDE_DELTA = 0.01;
 const LONGITUDE_DELTA = 0.01;
 
@@ -27,7 +49,7 @@ class MyMapView extends React.Component {
         super(props);
 
         this.map = null;
-
+        console.log(this.props, "props on map")
         this.state = {
             region: {
                 latitude: -37.78825,
@@ -42,6 +64,7 @@ class MyMapView extends React.Component {
             coords: [],
             distance: 0
         };
+        this.drawer = null;
     }
     async getDirections(startLoc, destinationLoc) {
 
@@ -80,7 +103,7 @@ class MyMapView extends React.Component {
 
     setRegion(region) {
         if (this.state.ready) {
-            setTimeout(() => this.map.animateToRegion(region), 400);
+            setTimeout(() => { this.map && this.map.animateToRegion(region) }, 400);
         }
         //this.setState({ region });
     }
@@ -89,7 +112,27 @@ class MyMapView extends React.Component {
         console.log('Component did mount');
         this.requestPermission();
         this.getDirections();
+        this.props.navigation.setParams({ "openDrawer": this.openDrawer });
     }
+    closeDrawer = () => {
+        if (this.drawer)
+            this.drawer._root.close()
+    };
+    openDrawer = () => {
+        if (this.drawer)
+            this.drawer._root.open()
+    };
+    static navigationOptions = ({ navigation }) => {
+
+        console.log("open drawer function", navigation.getParam("openDrawer"))
+        return {
+
+            headerLeft: (
+                <TouchableOpacity onPress={navigation.getParam("openDrawer")} style={{ marginLeft: 12, backgroundColor: "transparent" }} ><Icon name="menu" style={{ color: "#000" }} /></TouchableOpacity>
+            ),
+        }
+
+    };
     requestPermission = async () => {
         try {
 
@@ -159,6 +202,22 @@ class MyMapView extends React.Component {
     onRegionChangeComplete = (region) => {
         console.log('onRegionChangeComplete', region);
     };
+    replaceScreen = (route) => {
+        this.props.navigation.dispatch({
+            type: 'ReplaceCurrentScreen',
+            key: `${route}`,
+            routeName: `${route}`,
+        });
+    }
+    signOut = () => {
+        this.props.signOut();
+        this.props.setUnmountFlag(false);
+        AsyncStorage.clear().then(() => {
+            this.replaceScreen("signIn");
+        }).catch(err => {
+            console.log("error", err);
+        })
+    }
 
     render() {
 
@@ -166,47 +225,73 @@ class MyMapView extends React.Component {
         // const { children, renderMarker, markers } = this.props;
 
         return (
-            <View style={{}} >
-                {/* <View  > */}
-                <MapView
-                    showsUserLocation
-                    ref={map => { this.map = map }}
+            <Drawer
+                panOpenMask={20}
+                panCloseMask={40}
+                ref={(ref) => { this.drawer = ref; }}
+                content={<View style={{ flex: 1, backgroundColor: "#fff" }} >
 
-                    initialRegion={initialRegion}
-
-                    onMapReady={this.onMapReady}
-                    showsMyLocationButton={true}
-                    onRegionChange={this.onRegionChange}
-                    onRegionChangeComplete={this.onRegionChangeComplete}
-                    style={{
-                        width: width,
-                        height: height,
-                        zIndex: -1
-                    }}
-                    textStyle={{ color: '#bc8b00' }}
-                    containerStyle={{ backgroundColor: 'white', borderColor: '#BC8B00' }}>
-
-                    {/* {markers.map(renderMarker)} */}
-
-                    {/* {children && children || null} */}
-                    {this.state.start_location && <MapView.Marker
-                        coordinate={{ "latitude": this.state.start_location && this.state.start_location.lat, "longitude": this.state.start_location && this.state.start_location.lng }}
-                        title={`total distance ${this.state.distance} km`} />}
-                    {this.state.end_location && <MapView.Marker
-                        coordinate={{ "latitude": this.state.end_location && this.state.end_location.lat, "longitude": this.state.end_location && this.state.end_location.lng }}
-                        title={`total distance ${this.state.distance} km`} />}
-                    <MapView.Polyline
-                        coordinates={this.state.coords}
-                        strokeWidth={10}
-                        strokeColor="cyan" />
+                    {/* <TouchableOpacity onPress={() => {
+                       
+                    }} style={{ flex: 0.1,backgroundColor:"red", marginTop: "auto", justifyContent: "center", alignItems: "center" }} >
+                        <Text style={{ textAlignVertical: "center", textDecorationLine: "underline", textDecorationStyle: "solid", textDecorationColor: "#000" }} >SignOut</Text>
+                    </TouchableOpacity> */}
+                    <View style={{ flex: 0.1, marginTop: "auto" }} >
+                        <Button onPress={this.signOut} style={{ borderRadius: width / 9, width: width * 0.4, justifyContent: "center", backgroundColor: "#2FCC71", alignSelf: "center" }} ><Text style={{ color: "#fff", fontFamily: "OpenSans-Regular" }}  >Logout</Text></Button>
+                    </View>
+                </View>
+                }
+                onClose={() => this.closeDrawer()} >
 
 
-                </MapView>
-                {/* </View> */}
-                <Button style={{ backgroundColor: "#fff", width: width / 8, height: width / 8, zIndex: 10, position: "absolute", borderRadius: width / 8, top: height / 1.3, left: width / 1.2, alignItems: "center", justifyContent: "center" }} onPress={this.getCurrentPosition} ><MaterialIcons name="my-location" size={20} /></Button>
-            </View >
+                {/* //Maps View */}
+
+                <View style={{}} >
+                    {/* <View  > */}
+                    <MapView
+                        showsUserLocation
+                        ref={map => { this.map = map }}
+
+                        initialRegion={initialRegion}
+
+                        onMapReady={this.onMapReady}
+                        showsMyLocationButton={true}
+                        onRegionChange={this.onRegionChange}
+                        onRegionChangeComplete={this.onRegionChangeComplete}
+                        style={{
+                            width: width,
+                            height: height,
+                            zIndex: -1
+                        }}
+                        textStyle={{ color: '#bc8b00' }}
+                        containerStyle={{ backgroundColor: 'white', borderColor: '#BC8B00' }}>
+
+                        {/* {markers.map(renderMarker)} */}
+
+                        {/* {children && children || null} */}
+                        {this.state.start_location && <MapView.Marker
+                            coordinate={{ "latitude": this.state.start_location && this.state.start_location.lat, "longitude": this.state.start_location && this.state.start_location.lng }}
+                            title={`total distance ${this.state.distance} km`} />}
+                        {this.state.end_location && <MapView.Marker
+                            coordinate={{ "latitude": this.state.end_location && this.state.end_location.lat, "longitude": this.state.end_location && this.state.end_location.lng }}
+                            title={`total distance ${this.state.distance} km`} />}
+                        <MapView.Polyline
+                            coordinates={this.state.coords}
+                            strokeWidth={10}
+                            strokeColor="cyan" />
+
+
+                    </MapView>
+                    {/* </View> */}
+                    <Button style={{ backgroundColor: "#fff", width: width / 8, height: width / 8, zIndex: 10, position: "absolute", borderRadius: width / 8, top: height / 1.3, left: width / 1.2, alignItems: "center", justifyContent: "center" }} onPress={this.getCurrentPosition} ><MaterialIcons name="my-location" size={20} /></Button>
+
+                </View >
+            </Drawer>
         );
     }
 }
 
-export default MyMapView;
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(MyMapView);  

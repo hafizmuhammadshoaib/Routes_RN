@@ -5,7 +5,8 @@ let INITIAL_STATE = {
     isError: false,
     errorText: "",
     user: null,
-    token: ""
+    token: "",
+    unmountFlag: false,
 }
 
 export default function authReducer(state = INITIAL_STATE, action) {
@@ -30,9 +31,13 @@ export default function authReducer(state = INITIAL_STATE, action) {
 
 
         case actionTypes.GET_TOKEN_AND_USER:
-            return { ...state, token: action.payload.token, user: action.payload.user }
+            return { ...state, token: action.payload.token, user: action.payload.user, unmountFlag: true }
 
+        case actionTypes.SET_UNMOUNT_FLAG:
+            return { ...state, unmountFlag: action.payload }
 
+        case actionTypes.SIGN_OUT:
+            return { ...state, token: null, user: null }
         case actionTypes.CLEAR_ERROR:
             return { ...state, isError: false, errorText: "" }
 
