@@ -20,6 +20,9 @@ import { createStackNavigator } from "react-navigation"
 import MyMapsView from './src/Screens/MapScreen/MyMapsView';
 import SignIn from './src/Screens/SignIn/SignIn';
 import SignUp from './src/Screens/SignUp/SignUp';
+import BusInfo from './src/Screens/Bus Info/BusInfo';
+import BusRoute from './src/Screens/BusRoute/BusRoute';
+import LiveTracking from './src/Screens/Live Tracking/LiveTracking';
 
 
 export default class App extends Component {
@@ -38,14 +41,17 @@ export default class App extends Component {
 const RootStack = createStackNavigator({
   mapScreen: MyMapsView,
   signIn: SignIn,
-  signUp: SignUp
+  signUp: SignUp,
+  busInfo: BusInfo,
+  busRoute: BusRoute,
+  liveTracking: LiveTracking,
 }, {
     initialRouteName: "signIn",
     navigationOptions: {
-      
+
       headerTitle: 'Routes',
-      headerTitleStyle: { fontFamily: "OpenSans-Light", fontStyle: null, },
-      
+      headerTitleStyle: { fontFamily: "OpenSans-Bold", fontWeight: null },
+
     }
 
   })

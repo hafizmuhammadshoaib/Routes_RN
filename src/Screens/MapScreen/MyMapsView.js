@@ -16,9 +16,9 @@ import AuthActions from '../../Store/Actions/AuthActions/AuthActions';
 import { connect } from "react-redux";
 import DBActions from '../../Store/Actions/DBActions/DBActions';
 import Ionicons from "react-native-vector-icons/Ionicons";
-const drawerDataArray = [{ name: "Live Tracking", icon: require("../../../assets/images/gps-route.png") },
-{ name: "Bus Route", icon: require("../../../assets/images/route.png") },
-{ name: "Bus Info", icon: require("../../../assets/images/info.png") },
+const drawerDataArray = [{ name: "Live Tracking", icon: require("../../../assets/images/gps-route.png"), route: (ref) => { ref.props.navigation.navigate("liveTracking") } },
+{ name: "Bus Route", icon: require("../../../assets/images/route.png"), route: (ref) => { ref.props.navigation.navigate("busRoute") } },
+{ name: "Bus Info", icon: require("../../../assets/images/info.png"), route: (ref) => { ref.props.navigation.navigate("busInfo") } },
 { name: "Notification", icon: require("../../../assets/images/notification.png") },
 { name: "Settings", icon: require("../../../assets/images/settings-2.png") }];
 let ref;
@@ -257,13 +257,13 @@ class MyMapView extends React.Component {
                         </View>
 
                         <View style={{ marginTop: "auto" }} >
-                            <Text style={{ fontFamily: "OpenSans-Bold", color: "#fff", fontSize: fontScale * 15 }} > {this.props.user.name} </Text>
-                            <Text style={{ fontFamily: "OpenSans-Regular", color: "#fff", fontSize: fontScale * 13 }} > {this.props.user.email} </Text>
+                            <Text style={{ fontFamily: "OpenSans-Bold", color: "#fff", fontSize: fontScale * 15 }} > {this.props.user && this.props.user.name} </Text>
+                            <Text style={{ fontFamily: "OpenSans-Regular", color: "#fff", fontSize: fontScale * 13 }} > {this.props.user && this.props.user.email} </Text>
                         </View>
                     </View>
                     <View style={{ flex: 0.65, }} >
                         <FlatList data={drawerDataArray} renderItem={({ item, index }) => (
-                            <TouchableOpacity activeOpacity={0.6} key={index} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 10, padding: 10, backgroundColor: "#f9f9f9" }} >
+                            <TouchableOpacity activeOpacity={0.6} onPress={() => { item.route && item.route(this) }} key={index} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 10, padding: 10, backgroundColor: "#f9f9f9" }} >
                                 <Image source={item.icon} style={{ width: width / 10, height: width / 10, marginRight: 17 }} resizeMode="contain" />
                                 <Text style={{ fontFamily: "OpenSans-Regular", fontSize: fontScale * 18, marginRight: "auto" }} >{item.name}</Text>
                             </TouchableOpacity>
