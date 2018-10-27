@@ -6,7 +6,7 @@ import {
     PermissionsAndroid, View, Dimensions, ScrollView, Image, FlatList, Text, TouchableOpacity, AsyncStorage
 } from 'react-native';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { Fab, Button, Icon, Drawer, Accordion, Card, CardItem } from "native-base";
+import { Fab, Button, Icon, Drawer, Accordion, Card, CardItem, Spinner } from "native-base";
 const { height, width, fontScale, scale } = Dimensions.get("window");
 import MapView from 'react-native-maps';
 import Polyline from '@mapbox/polyline';
@@ -20,15 +20,45 @@ const dataArray = [
     { title: "HU 02", content: "Lorem ipsum dolor sit amet" },
     { title: "HU 03", content: "Lorem ipsum dolor sit amet" }
 ];
+const mapStateToProps = state => {
+    console.log(state);
+    return {
+        isProgress_db: state.dbReducer["isProgress_db"],
+        user: state.authReducer['user'],
+        isError_db: state.dbReducer["isError_db"],
+        errorText_db: state.dbReducer["errorText_db"],
+        token: state.authReducer["token"],
+        busInfo: state.dbReducer["busInfo"],
+        busInfoPage: state.dbReducer["busInfoPage"],
+        busInfoHasPages: state.dbReducer["busInfoHasPages"],
+
+
+    };
+};
+const mapDispatchToProps = dispatch => {
+    return {
+        // signOut: () => dispatch(AuthActions.signOut()),
+        // setUnmountFlag: (value) => dispatch(AuthActions.setUnmountFlag(value)),
+        getBusInfo: (token, page) => { dispatch(DBActions.getBusInfo(token, page)) },
+        clearInfo: () => { dispatch(DBActions.clearInfo()) },
+    };
+};
+const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+    const paddingToBottom = 20;
+    return layoutMeasurement.height + contentOffset.y >=
+        contentSize.height - paddingToBottom;
+};
 class BusInfo extends Component {
     constructor(props) {
         super(props);
 
     }
+
     static navigationOptions = {
         headerTitle: 'Bus Information',
         headerTitleStyle: { fontFamily: "OpenSans-Regular", fontWeight: null }
     };
+
     _renderHeader = (title, expanded) => {
         return (
             // <View
@@ -44,7 +74,7 @@ class BusInfo extends Component {
             <Card  >
                 <CardItem style={{ justifyContent: "space-between", backgroundColor: "#2FCC71" }} >
                     <Text style={{ fontFamily: "OpenSans-SemiBold", color: "#f5f5f5", fontSize: fontScale * 18, }}>
-                        {title.title}
+                        {title.bus_name}
                     </Text>
                     {expanded
                         ? <Icon style={{ fontSize: fontScale * 18 }} name="ios-arrow-down" style={{ color: "#f5f5f5" }} />
@@ -62,9 +92,9 @@ class BusInfo extends Component {
                         <Image source={require("../../../assets/images/school-bus.png")} style={{ width: width / 10, height: height / 10, }} resizeMode="contain" />
                     </View>
                     <View style={{ padding: 5 }} >
-                        <Text style={{ fontFamily: "OpenSans-Regular" }} >{`Driver Name: lorem ipsum\n`}</Text>
-                        <Text style={{ fontFamily: "OpenSans-Regular" }} >{`Phone Number: +9200000000\n`}</Text>
-                        <Text style={{ marginBottom: 5, fontFamily: "OpenSans-Regular" }} >{`Stop Info: Agakhan,Hassan Square,Gulshan-e-iqbal13-D,Azizabad,Dastagir,Hamdard University\n`}</Text>
+                        <Text style={{ fontFamily: "OpenSans-Regular" }} >{`Driver Name: ${content.bus_driver_name}\n`}</Text>
+                        <Text style={{ fontFamily: "OpenSans-Regular" }} >{`Phone Number: ${content.bus_driver_phone}\n`}</Text>
+                        <Text style={{ marginBottom: 5, fontFamily: "OpenSans-Regular" }} >{`Stop Info: ${content.stop_info}\n`}</Text>
                     </View>
                 </View>
                 <Button style={{ backgroundColor: "#fff", width: width * 0.95, justifyContent: "center", }} >
@@ -74,23 +104,39 @@ class BusInfo extends Component {
             </View>
         );
     }
+    componentDidMount() {
+        this.props.clearInfo();
+        this.props.getBusInfo(this.props.token, 1);
+
+    }
+    requestPages = () => {
+        console.log("req pages")
+        if (this.props.busInfoHasPages) {
+            this.props.getBusInfo(this.props.token, (Number(this.props.busInfoPage) + 1))
+        }
+    }
     render() {
         return (
-            <ScrollView contentContainerStyle={{ height: height - 80, width }} style={{ backgroundColor: "#f5f5f5" }} >
+            // <ScrollView contentContainerStyle={{ height: height - 80, width }} style={{ backgroundColor: "#f5f5f5" }} >
 
-                <View style={{ flex: 1, backgroundColor: "#f5f5f5", alignItems: "center" }} >
-                    {/* <FlatList data={} renderItem={({ item, index }) => ( */}
+            <View style={{ flex: 1, backgroundColor: "#f5f5f5", alignItems: "center" }} >
+                <FlatList data={this.props.busInfo && this.props.busInfo} renderItem={({ item, index }) => (
+
                     <Accordion
                         style={{ width: width * 0.95 }}
-                        dataArray={dataArray}
+                        dataArray={[item]}
                         renderHeader={this._renderHeader}
                         renderContent={this._renderContent}
                     />
-                    {/* )} /> */}
-                </View>
-            </ScrollView>
+
+                )} onEndReached={this.requestPages} onEndReachedThreshold={0.3} />
+            </View>
+            // </ScrollView>
 
         )
     }
 }
-export default BusInfo;
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(BusInfo);  

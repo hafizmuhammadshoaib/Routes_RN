@@ -16,9 +16,9 @@ import AuthActions from '../../Store/Actions/AuthActions/AuthActions';
 import { connect } from "react-redux";
 import DBActions from '../../Store/Actions/DBActions/DBActions';
 import Ionicons from "react-native-vector-icons/Ionicons";
-const drawerDataArray = [{ name: "Live Tracking", icon: require("../../../assets/images/gps-route.png"), route: (ref) => { ref.props.navigation.navigate("liveTracking") } },
-{ name: "Bus Route", icon: require("../../../assets/images/route.png"), route: (ref) => { ref.props.navigation.navigate("busRoute") } },
-{ name: "Bus Info", icon: require("../../../assets/images/info.png"), route: (ref) => { ref.props.navigation.navigate("busInfo") } },
+const drawerDataArray = [{ name: "Live Tracking", icon: require("../../../assets/images/gps-route.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("liveTracking"); } },
+{ name: "Bus Route", icon: require("../../../assets/images/route.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("busRoute") } },
+{ name: "Bus Info", icon: require("../../../assets/images/info.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("busInfo") } },
 { name: "Notification", icon: require("../../../assets/images/notification.png") },
 { name: "Settings", icon: require("../../../assets/images/settings-2.png") }];
 let ref;
@@ -39,7 +39,9 @@ const mapDispatchToProps = dispatch => {
     return {
         signOut: () => dispatch(AuthActions.signOut()),
         setUnmountFlag: (value) => dispatch(AuthActions.setUnmountFlag(value)),
-        getBusRoute: (token, busName) => { dispatch(DBActions.getBusRoute(token, busName)) }
+        getBusRoute: (token, busName) => { dispatch(DBActions.getBusRoute(token, busName)) },
+        clearRoute: () => { dispatch(DBActions.clearRoute()) },
+        clearError: () => { dispatch(DBActions.clearError()) }
     };
 };
 
@@ -101,9 +103,16 @@ class MyMapView extends React.Component {
                 }
                 distance += obj.routes[0].legs[0].distance.value
             })
+            // const region = {
+            //     latitude: position.coords.latitude,
+            //     longitude: position.coords.longitude,
+            //     latitudeDelta: LATITUDE_DELTA,
+            //     longitudeDelta: LONGITUDE_DELTA,
+            // };
             // console.log("legs", respJson.routes[0].legs[0])
             // this.setState({ coords: coords, start_location: respJson.routes[0].legs[0].start_location, end_location: respJson.routes[0].legs[0].end_location })
             this.setState({ coords: coords, start_location, end_location, distance: distance / 1000 })
+            this.setRegion({ latitude: start_location.lat, longitude: start_location.lng, latitudeDelta: LATITUDE_DELTA, longitudeDelta: LONGITUDE_DELTA, longitudeDelta: LONGITUDE_DELTA, })
             return coords
         } catch (error) {
             alert(error)
@@ -122,12 +131,19 @@ class MyMapView extends React.Component {
         console.log('Component did mount');
         this.requestPermission();
         // this.getDirections();
-        this.props.getBusRoute(this.props.token, "HU_2");
+        // this.props.getBusRoute(this.props.token, "HU_2");
         this.props.navigation.setParams({ "openDrawer": this.openDrawer });
     }
     static getDerivedStateFromProps = (nextProps, prevState) => {
         if (nextProps.bus_route.length > 0) {
+            ref.setState({ coords: null, start_location: null, end_location: null })
             ref.getDirections(nextProps.bus_route);
+            nextProps.clearRoute();
+        }
+        else if (nextProps.isError_db) {
+            ref.setState({ coords: [], start_location: null, end_location: null })            
+            alert(nextProps.errorText_db);
+            nextProps.clearError();
         }
         return null;
     }
@@ -244,6 +260,7 @@ class MyMapView extends React.Component {
 
         // const { region } = this.state;
         // const { children, renderMarker, markers } = this.props;
+        console.log("state:::", this.state)
 
         return (
             <Drawer
@@ -290,7 +307,7 @@ class MyMapView extends React.Component {
                         initialRegion={initialRegion}
 
                         onMapReady={this.onMapReady}
-                        showsMyLocationButton={true}
+                        // showsMyLocationButton={true}
                         onRegionChange={this.onRegionChange}
                         onRegionChangeComplete={this.onRegionChangeComplete}
                         style={{

@@ -23,7 +23,8 @@ export const rootEpic = combineEpics(
   // more epics functions go here
   AuthEpic.signIn,
   AuthEpic.signUp,
-  DBEpic.getBusRoute
+  DBEpic.getBusRoute,
+  DBEpic.getBusInfo,
 );
 
 const epicMiddleware = createEpicMiddleware(rootEpic);
