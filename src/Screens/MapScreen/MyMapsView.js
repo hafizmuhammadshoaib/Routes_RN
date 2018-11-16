@@ -16,6 +16,7 @@ import AuthActions from '../../Store/Actions/AuthActions/AuthActions';
 import { connect } from "react-redux";
 import DBActions from '../../Store/Actions/DBActions/DBActions';
 import Ionicons from "react-native-vector-icons/Ionicons";
+import SocketIOClient from 'socket.io-client';
 const drawerDataArray = [{ name: "Live Tracking", icon: require("../../../assets/images/gps-route.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("liveTracking"); } },
 { name: "Bus Route", icon: require("../../../assets/images/route.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("busRoute") } },
 { name: "Bus Info", icon: require("../../../assets/images/info.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("busInfo") } },
@@ -62,6 +63,13 @@ class MyMapView extends React.Component {
         ref = this;
         this.map = null;
         console.log(this.props, "props on map")
+        this.socket = SocketIOClient("http://192.168.1.104:3000", {
+            reconnection: true,
+            reconnectionDelay: 1000,
+            reconnectionDelayMax: 5000,
+            reconnectionAttempts: 99999,
+            transports: ['websocket']
+        });
         this.state = {
             region: {
                 latitude: -37.78825,
@@ -77,6 +85,7 @@ class MyMapView extends React.Component {
             distance: 0
         };
         this.drawer = null;
+
     }
     getDirections = (busRoute) => {
         console.log("get directions", busRoute)
@@ -133,7 +142,13 @@ class MyMapView extends React.Component {
         // this.getDirections();
         // this.props.getBusRoute(this.props.token, "HU_2");
         this.props.navigation.setParams({ "openDrawer": this.openDrawer });
+        // this.socket.on("HU 03", (object) => {
+        //     alert("yes listening")
+        // })
+
     }
+
+
     static getDerivedStateFromProps = (nextProps, prevState) => {
         if (nextProps.bus_route.length > 0) {
             ref.setState({ coords: null, start_location: null, end_location: null })
@@ -141,7 +156,7 @@ class MyMapView extends React.Component {
             nextProps.clearRoute();
         }
         else if (nextProps.isError_db) {
-            ref.setState({ coords: [], start_location: null, end_location: null })            
+            ref.setState({ coords: [], start_location: null, end_location: null })
             alert(nextProps.errorText_db);
             nextProps.clearError();
         }
@@ -157,9 +172,26 @@ class MyMapView extends React.Component {
         if (this.drawer)
             this.drawer._root.open()
     };
-    static navigationOptions = ({ navigation }) => {
+    trackLocation = (object) => {
 
-        console.log("open drawer function", navigation.getParam("openDrawer"))
+
+    }
+    static navigationOptions = ({ navigation, }) => {
+
+        console.log("open drawer function", navigation.getParam("openDrawer"));
+        // console.log("open drawer function", navigation.getParam("eventName"));
+        console.log("ref.trackLocation", ref && ref.trackLocation)
+        let eventName = navigation.getParam("eventName");
+        if (eventName && eventName.length > 0) {
+            ref && ref.socket.removeAllListeners();
+            console.log("event name inside if", eventName)
+            ref && ref.socket.on(eventName, (object) => {
+                alert(JSON.stringify(object));
+            })
+        }
+
+
+
         return {
 
             headerLeft: (
