@@ -36,9 +36,9 @@ const mapDispatchToProps = dispatch => {
     };
 };
 const dataArray = [
-    { title: "HU 01", bus_name: "HU 01" },
-    { title: "HU 02", bus_name: "HU 02" },
-    { title: "HU 38", bus_name: "HU 38" }
+    { title: "HU-01", bus_name: "HU-01" },
+    { title: "HU-02", bus_name: "HU-02" },
+    { title: "HU-38", bus_name: "HU-38" }
 ];
 class BusRoute extends Component {
     constructor(props) {
