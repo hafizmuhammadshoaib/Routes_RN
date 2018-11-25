@@ -25,6 +25,7 @@ export const rootEpic = combineEpics(
   AuthEpic.signUp,
   DBEpic.getBusRoute,
   DBEpic.getBusInfo,
+  DBEpic.getLiveTrackInfo
 );
 
 const epicMiddleware = createEpicMiddleware(rootEpic);

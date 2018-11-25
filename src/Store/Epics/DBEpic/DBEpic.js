@@ -33,5 +33,17 @@ export default class DBEpic {
             })
         })
     }
+    static getLiveTrackInfo(action$){
+        return action$.ofType(actionTypes.LIVE_TRACK_INFO_PROG).switchMap(({payload})=>{
+            return service.get(`${BASE_URL}/livetracking/?bus_name=${payload.busName}&date=${payload.date}&daylight=${payload.dayLight}`,{ 'authorization': payload.token, 'Content-Type': 'application/json' }).pluck("response").map((array)=>{
+                return{
+                    type:actionTypes.LIVE_TRACK_INFO_SUCC,
+                    payload:array
+                }
+            }).catch(err=>{
+                return Observable.of({type:actionTypes.LIVE_TRACK_INFO_FAIL,payload:err.response ? err.response.error : err.message})
+            })
+        })
+    }
 
 }

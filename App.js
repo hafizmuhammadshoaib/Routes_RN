@@ -23,7 +23,9 @@ import SignUp from './src/Screens/SignUp/SignUp';
 import BusInfo from './src/Screens/Bus Info/BusInfo';
 import BusRoute from './src/Screens/BusRoute/BusRoute';
 import LiveTracking from './src/Screens/Live Tracking/LiveTracking';
-
+import Settings from "./src/Screens/Settings/Settings";
+import StopLocation from './src/Screens/StopLocation/StopLocation';
+import Notifications from './src/Screens/Notifications/Notifications';
 
 export default class App extends Component {
   render() {
@@ -45,6 +47,9 @@ const RootStack = createStackNavigator({
   busInfo: BusInfo,
   busRoute: BusRoute,
   liveTracking: LiveTracking,
+  settings: Settings,
+  stopLocation: StopLocation,
+  notifications: Notifications
 }, {
     initialRouteName: "signIn",
     navigationOptions: {

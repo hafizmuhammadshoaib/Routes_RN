@@ -20,8 +20,8 @@ import SocketIOClient from 'socket.io-client';
 const drawerDataArray = [{ name: "Live Tracking", icon: require("../../../assets/images/gps-route.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("liveTracking"); } },
 { name: "Bus Route", icon: require("../../../assets/images/route.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("busRoute") } },
 { name: "Bus Info", icon: require("../../../assets/images/info.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("busInfo") } },
-{ name: "Notification", icon: require("../../../assets/images/notification.png") },
-{ name: "Settings", icon: require("../../../assets/images/settings-2.png") }];
+{ name: "Notification", icon: require("../../../assets/images/notification.png"),route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("notifications") }  },
+{ name: "Settings", icon: require("../../../assets/images/settings-2.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("settings") } }];
 let ref;
 const mapStateToProps = state => {
     console.log(state);
@@ -82,7 +82,11 @@ class MyMapView extends React.Component {
             ready: true,
             filteredMarkers: [],
             coords: [],
-            distance: 0
+            distance: 0,
+            curr_location: false,
+            curr_location_lat: 0,
+            curr_location_lng: 0,
+            curr_location_bus_name: ""
         };
         this.drawer = null;
 
@@ -174,6 +178,8 @@ class MyMapView extends React.Component {
     };
     trackLocation = (object) => {
 
+        this.setState({ curr_location: true, curr_location_bus_name: object.bus_name, curr_location_lat: object.lat, curr_location_lng: object.lng });
+        this.setRegion({ latitude: object.lat, longitude: object.lng, latitudeDelta: LATITUDE_DELTA, longitudeDelta: LONGITUDE_DELTA, longitudeDelta: LONGITUDE_DELTA, })
 
     }
     static navigationOptions = ({ navigation, }) => {
@@ -185,9 +191,7 @@ class MyMapView extends React.Component {
         if (eventName && eventName.length > 0) {
             ref && ref.socket.removeAllListeners();
             console.log("event name inside if", eventName)
-            ref && ref.socket.on(eventName, (object) => {
-                alert(JSON.stringify(object));
-            })
+            ref && ref.socket.on(eventName, ref.trackLocation)
         }
 
 
@@ -359,10 +363,18 @@ class MyMapView extends React.Component {
                         {this.state.end_location && <MapView.Marker
                             coordinate={{ "latitude": this.state.end_location && this.state.end_location.lat, "longitude": this.state.end_location && this.state.end_location.lng }}
                             title={`total distance ${this.state.distance} km`} />}
+                        {this.state.curr_location && <MapView.Marker
+                            coordinate={{ "latitude": this.state.curr_location_lat, "longitude": this.state.curr_location_lng }}
+                            title={this.state.curr_location_bus_name} />}
                         <MapView.Polyline
                             coordinates={this.state.coords}
                             strokeWidth={10}
                             strokeColor="cyan" />
+                        <MapView.Polyline
+                            coordinates={[{ "latitude": 24.890988, "longitude": 67.077513 }, { "latitude": 24.893365, "longitude": 67.080659 }, { "latitude": 24.915589, "longitude": 67.093708 }]}
+                            strokeWidth={10}
+                            strokeColor="cyan" />
+
 
 
                     </MapView>
