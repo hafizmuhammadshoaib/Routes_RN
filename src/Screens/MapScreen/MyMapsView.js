@@ -370,10 +370,10 @@ class MyMapView extends React.Component {
                             coordinates={this.state.coords}
                             strokeWidth={10}
                             strokeColor="cyan" />
-                        <MapView.Polyline
+                        {/* <MapView.Polyline
                             coordinates={[{ "latitude": 24.890988, "longitude": 67.077513 }, { "latitude": 24.893365, "longitude": 67.080659 }, { "latitude": 24.915589, "longitude": 67.093708 }]}
                             strokeWidth={10}
-                            strokeColor="cyan" />
+                            strokeColor="cyan" /> */}
 
 
 
