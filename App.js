@@ -15,6 +15,7 @@ import {
 import { Provider } from "react-redux";
 
 import { store } from './src/Store/index';
+import SplashScreen from 'react-native-splash-screen';
 import MapScreen from "./src/Screens/MapScreen/MapScreen";
 import { createStackNavigator } from "react-navigation"
 import MyMapsView from './src/Screens/MapScreen/MyMapsView';
@@ -28,6 +29,9 @@ import StopLocation from './src/Screens/StopLocation/StopLocation';
 import Notifications from './src/Screens/Notifications/Notifications';
 
 export default class App extends Component {
+  componentDidMount() {
+    SplashScreen.hide();
+  }
   render() {
     return (
       <Provider store={store} >
