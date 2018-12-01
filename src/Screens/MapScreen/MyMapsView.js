@@ -20,7 +20,7 @@ import SocketIOClient from 'socket.io-client';
 const drawerDataArray = [{ name: "Live Tracking", icon: require("../../../assets/images/gps-route.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("liveTracking"); } },
 { name: "Bus Route", icon: require("../../../assets/images/route.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("busRoute") } },
 { name: "Bus Info", icon: require("../../../assets/images/info.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("busInfo") } },
-{ name: "Notification", icon: require("../../../assets/images/notification.png"),route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("notifications") }  },
+{ name: "Notification", icon: require("../../../assets/images/notification.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("notifications") } },
 { name: "Settings", icon: require("../../../assets/images/settings-2.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("settings") } }];
 let ref;
 const mapStateToProps = state => {
@@ -31,7 +31,8 @@ const mapStateToProps = state => {
         isError_db: state.dbReducer["isError_db"],
         errorText_db: state.dbReducer["errorText_db"],
         token: state.authReducer["token"],
-        bus_route: state.dbReducer["bus_route"]
+        bus_route: state.dbReducer["bus_route"],
+        allBusInfo: state.dbReducer["allBusInfo"]
 
 
     };
@@ -42,7 +43,8 @@ const mapDispatchToProps = dispatch => {
         setUnmountFlag: (value) => dispatch(AuthActions.setUnmountFlag(value)),
         getBusRoute: (token, busName) => { dispatch(DBActions.getBusRoute(token, busName)) },
         clearRoute: () => { dispatch(DBActions.clearRoute()) },
-        clearError: () => { dispatch(DBActions.clearError()) }
+        clearError: () => { dispatch(DBActions.clearError()) },
+        getAllBusInfo: (token) => { dispatch(DBActions.getAllBusInfo(token)) }
     };
 };
 
@@ -146,6 +148,8 @@ class MyMapView extends React.Component {
         // this.getDirections();
         // this.props.getBusRoute(this.props.token, "HU_2");
         this.props.navigation.setParams({ "openDrawer": this.openDrawer });
+        this.props.getAllBusInfo(this.props.token);
+
         // this.socket.on("HU 03", (object) => {
         //     alert("yes listening")
         // })

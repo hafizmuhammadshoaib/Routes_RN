@@ -29,4 +29,16 @@ export default class HttpService {
             createXHR: () => new XMLHttpRequest()
         });
     } // post
+    static put(url, body, headers = { 'Content-Type': 'application/json' }) {
+        return Observable.ajax({
+            url,
+            method: 'PUT',
+            body,
+            headers,
+            async: true,
+            crossDomain: true,
+            responseType: 'json',
+            createXHR: () => new XMLHttpRequest()
+        });
+    } // put
 }

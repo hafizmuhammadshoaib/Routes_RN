@@ -7,6 +7,7 @@ let INITIAL_STATE = {
     user: null,
     token: "",
     unmountFlag: false,
+    callSuccess: false
 }
 
 export default function authReducer(state = INITIAL_STATE, action) {
@@ -41,6 +42,26 @@ export default function authReducer(state = INITIAL_STATE, action) {
         case actionTypes.CLEAR_ERROR:
             return { ...state, isError: false, errorText: "" }
 
+
+
+        case actionTypes.SET_STOP_LOCATION_PROG:
+            return { ...state, isProgress: true, callSuccess: false };
+        case actionTypes.SET_STOP_LOCATION_SUCC:
+            return { ...state, isProgress: false, user: action.payload.user, callSuccess: true };
+        case actionTypes.SET_STOP_LOCATION_FAIL:
+            return { ...state, isProgress: false, isError: true, errorText: action.payload, callSuccess: false }
+
+
+        case actionTypes.UPDATE_BUS_NAME_PROG:
+            return { ...state, isProgress: true, callSuccess: false };
+        case actionTypes.UPDATE_BUS_NAME_SUCC:
+            return { ...state, isProgress: false, callSuccess: true, user: action.payload.user };
+        case actionTypes.UPDATE_BUS_NAME_FAIL:
+            return { ...state, isProgress: false, isError: true, errorText: action.payload, callSuccess: false }
+
+
+        case actionTypes.CALL_SUCCESS_FLAG_FALSE:
+            return { ...state, callSuccess: false }
         default:
             return state;
     }

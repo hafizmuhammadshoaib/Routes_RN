@@ -33,7 +33,7 @@ export default class DBActions {
         let date = `${new Date().getFullYear()},${new Date().getMonth()},${new Date().getDate()}`;
         console.log("date****", date);
         let hour = new Date().getHours();
-        
+
         let dayLight;
         if ((hour >= 7) && (hour <= 11)) {
             dayLight = "morning";
@@ -44,6 +44,29 @@ export default class DBActions {
         return {
             type: actionTypes.LIVE_TRACK_INFO_PROG,
             payload: { token: "Bearer " + token, busName, date, dayLight }
+        }
+    }
+    static setStopLocation(token, email, lat, lng) {
+        return {
+            type: actionTypes.SET_STOP_LOCATION_PROG,
+            payload: { token: "Bearer " + token, email, lat, lng }
+        }
+    }
+    static getAllBusInfo(token) {
+        return {
+            type: actionTypes.GET_ALL_BUS_INFO_PROG,
+            payload: { token: "Bearer " + token }
+        }
+    }
+    static updateBusName(token, email, busName) {
+        return {
+            type: actionTypes.UPDATE_BUS_NAME_PROG,
+            payload: { token: "Bearer " + token, email, busName }
+        }
+    }
+    static callSuccessFlag(){
+        return{
+            type:actionTypes.CALL_SUCCESS_FLAG_FALSE
         }
     }
 }

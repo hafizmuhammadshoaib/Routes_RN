@@ -24,6 +24,38 @@ const initialRegion = {
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
 }
+const mapStateToProps = state => {
+    console.log(state);
+    return {
+        isProgress: state.authReducer["isProgress"],
+        user: state.authReducer['user'],
+        isError: state.authReducer["isError"],
+        errorText: state.authReducer["errorText"],
+        token: state.authReducer["token"],
+        callSuccess: state.authReducer["callSuccess"]
+
+
+
+    };
+};
+const mapDispatchToProps = dispatch => {
+    return {
+        setStopLocation: (token, email, lat, lng) => { dispatch(DBActions.setStopLocation(token, email, lat, lng)) },
+    };
+};
+const _storeData = async (user) => {
+
+    try {
+
+        // await AsyncStorage.setItem('token', token, (error) => console.log("error saving data", error));
+        await AsyncStorage.setItem("user", JSON.stringify(user), (error) => console.log("error saving data", error))
+        console.log("value saved in async storage")
+
+    } catch (error) {
+        console.log("store data error", error)
+        // Error saving data
+    }
+}
 
 class StopLocation extends Component {
     constructor(props) {
@@ -43,6 +75,22 @@ class StopLocation extends Component {
     componentDidMount() {
         this.requestPermission();
     }
+    static getDerivedStateFromProps = (props, state) => {
+        console.log("user", props.user)
+        if (props.callSuccess && props.navigation.isFocused()) {
+            try {
+                console.log("token", props.token)
+                // await AsyncStorage.setItem('token', token);
+
+                _storeData(props.user);
+                props.navigation.goBack();
+
+            } catch (error) {
+                // Error saving data
+            }
+        }
+        return null;
+    }
     setRegion(region) {
         if (this.state.ready) {
             setTimeout(() => { this.map && this.map.animateToRegion(region) }, 400);
@@ -54,17 +102,6 @@ class StopLocation extends Component {
 
             const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                // alert(granted)
-                // navigator.geolocation.getCurrentPosition((position) => {
-
-                //     this.setState({
-                //         latitude: position.coords.latitude,
-                //         longitude: position.coords.longitude,
-
-                //     }
-
-                //     );
-                // })
                 this.getCurrentPosition();
             } else {
                 alert("not granted")
@@ -126,7 +163,8 @@ class StopLocation extends Component {
         this.setState({ mapMoving: false, stopCoordinate: { latitude: region.latitude, longitude: region.longitude } })
     };
     confirmHandler = () => {
-        this.props.navigation.goBack();
+        this.props.setStopLocation(this.props.token, this.props.user.email, this.state.stopCoordinate.latitude, this.state.stopCoordinate.longitude)
+        // this.props.navigation.goBack();
     }
     render() {
         return (
@@ -166,4 +204,7 @@ class StopLocation extends Component {
         )
     }
 }
-export default StopLocation;
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(StopLocation);  

@@ -11,7 +11,8 @@ let INITIAL_STATE = {
     busInfo: null,
     busInfoPage: null,
     busInfoHasPages: null,
-    liveTrackCoord: null
+    liveTrackCoord: null,
+    allBusInfo: null,
 
 
 }
@@ -48,6 +49,15 @@ export default function dbReducer(state = INITIAL_STATE, action) {
             return { ...state, isProgress_db: false, liveTrackCoord: action.payload, };
         case actionTypes.LIVE_TRACK_INFO_FAIL:
             return { ...state, isProgress_db: false, isError_db: true, errorText_db: action.payload }
+
+
+        case actionTypes.GET_ALL_BUS_INFO_PROG:
+            return { ...state, isProgress_db: true };
+        case actionTypes.GET_ALL_BUS_INFO_SUCC:
+            return { ...state, isProgress_db: false, allBusInfo: action.payload };
+        case actionTypes.GET_ALL_BUS_INFO_FAIL:
+            return { ...state, isProgress_db: false, isError_db: true, errorText_db: action.payload }
+
         default:
             return state;
     }
