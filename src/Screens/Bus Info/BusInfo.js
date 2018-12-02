@@ -129,7 +129,12 @@ class BusInfo extends Component {
                         renderContent={this._renderContent}
                     />
 
-                )} onEndReached={this.requestPages} onEndReachedThreshold={0.3} />
+                )} ListFooterComponent={() =>
+                    (<View>
+                        {this.props.isProgress_db && <Spinner />}
+                    </View>)
+                }
+                    onEndReached={this.requestPages} onEndReachedThreshold={0.5} />
             </View>
             // </ScrollView>
 

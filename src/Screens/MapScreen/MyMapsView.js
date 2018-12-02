@@ -93,47 +93,7 @@ class MyMapView extends React.Component {
         this.drawer = null;
 
     }
-    getDirections = (busRoute) => {
-        console.log("get directions", busRoute)
-        try {
-            // let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=24.933145,67.085385&destination=25.083330,67.012572&key=AIzaSyDDmyFwVLZ7Fys0sWTDMxa7h_Dyy79BXuM`)
-            // let respJson = await resp.json();
-            let coords = [];
-            let start_location = null;
-            let end_location = null;
-            let distance = 0;
-            busRoute.map((obj, index) => {
-
-                let points = Polyline.decode(obj.routes[0].overview_polyline.points);
-                points.forEach((point, index) => {
-                    coords.push({
-                        latitude: point[0],
-                        longitude: point[1]
-                    })
-                })
-                if (index == 0) {
-                    start_location = obj.routes[0].legs[0].start_location
-                } if (index == busRoute.length - 1) {
-                    end_location = obj.routes[0].legs[0].end_location
-                }
-                distance += obj.routes[0].legs[0].distance.value
-            })
-            // const region = {
-            //     latitude: position.coords.latitude,
-            //     longitude: position.coords.longitude,
-            //     latitudeDelta: LATITUDE_DELTA,
-            //     longitudeDelta: LONGITUDE_DELTA,
-            // };
-            // console.log("legs", respJson.routes[0].legs[0])
-            // this.setState({ coords: coords, start_location: respJson.routes[0].legs[0].start_location, end_location: respJson.routes[0].legs[0].end_location })
-            this.setState({ coords: coords, start_location, end_location, distance: distance / 1000 })
-            this.setRegion({ latitude: start_location.lat, longitude: start_location.lng, latitudeDelta: LATITUDE_DELTA, longitudeDelta: LONGITUDE_DELTA, longitudeDelta: LONGITUDE_DELTA, })
-            return coords
-        } catch (error) {
-            alert(error)
-            return error
-        }
-    }
+   
 
     setRegion(region) {
         if (this.state.ready) {
@@ -154,21 +114,6 @@ class MyMapView extends React.Component {
         //     alert("yes listening")
         // })
 
-    }
-
-
-    static getDerivedStateFromProps = (nextProps, prevState) => {
-        if (nextProps.bus_route.length > 0) {
-            ref.setState({ coords: null, start_location: null, end_location: null })
-            ref.getDirections(nextProps.bus_route);
-            nextProps.clearRoute();
-        }
-        else if (nextProps.isError_db) {
-            ref.setState({ coords: [], start_location: null, end_location: null })
-            alert(nextProps.errorText_db);
-            nextProps.clearError();
-        }
-        return null;
     }
 
     closeDrawer = () => {
@@ -214,17 +159,6 @@ class MyMapView extends React.Component {
 
             const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                // alert(granted)
-                // navigator.geolocation.getCurrentPosition((position) => {
-
-                //     this.setState({
-                //         latitude: position.coords.latitude,
-                //         longitude: position.coords.longitude,
-
-                //     }
-
-                //     );
-                // })
                 this.getCurrentPosition();
             } else {
                 alert("not granted")
@@ -321,7 +255,7 @@ class MyMapView extends React.Component {
                     <View style={{ flex: 0.65, }} >
                         <FlatList data={drawerDataArray} renderItem={({ item, index }) => (
                             <TouchableOpacity activeOpacity={0.6} onPress={() => { item.route && item.route(this) }} key={index} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 10, padding: 10, backgroundColor: "#f9f9f9" }} >
-                                <Image source={item.icon} style={{ width: width / 10, height: width / 10, marginRight: 17 }} resizeMode="contain" />
+                                <Image source={item.icon} style={{ width: width / 12, height: width / 12, marginRight: 17 }} resizeMode="contain" />
                                 <Text style={{ fontFamily: "OpenSans-Regular", fontSize: fontScale * 18, marginRight: "auto" }} >{item.name}</Text>
                             </TouchableOpacity>
                         )
@@ -361,19 +295,13 @@ class MyMapView extends React.Component {
                         {/* {markers.map(renderMarker)} */}
 
                         {/* {children && children || null} */}
-                        {this.state.start_location && <MapView.Marker
-                            coordinate={{ "latitude": this.state.start_location && this.state.start_location.lat, "longitude": this.state.start_location && this.state.start_location.lng }}
-                            title={`total distance ${this.state.distance} km`} />}
-                        {this.state.end_location && <MapView.Marker
-                            coordinate={{ "latitude": this.state.end_location && this.state.end_location.lat, "longitude": this.state.end_location && this.state.end_location.lng }}
-                            title={`total distance ${this.state.distance} km`} />}
                         {this.state.curr_location && <MapView.Marker
                             coordinate={{ "latitude": this.state.curr_location_lat, "longitude": this.state.curr_location_lng }}
                             title={this.state.curr_location_bus_name} />}
-                        <MapView.Polyline
+                        {/* <MapView.Polyline
                             coordinates={this.state.coords}
                             strokeWidth={10}
-                            strokeColor="cyan" />
+                            strokeColor="cyan" /> */}
                         {/* <MapView.Polyline
                             coordinates={[{ "latitude": 24.890988, "longitude": 67.077513 }, { "latitude": 24.893365, "longitude": 67.080659 }, { "latitude": 24.915589, "longitude": 67.093708 }]}
                             strokeWidth={10}

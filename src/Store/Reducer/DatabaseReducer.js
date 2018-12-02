@@ -6,8 +6,8 @@ let INITIAL_STATE = {
     isProgress_db: false,
     isError_db: false,
     errorText_db: "",
-    bus_name: "",
-    bus_route: [],
+    busName: "",
+    busRoute: [],
     busInfo: null,
     busInfoPage: null,
     busInfoHasPages: null,
@@ -20,14 +20,14 @@ let INITIAL_STATE = {
 export default function dbReducer(state = INITIAL_STATE, action) {
     switch (action.type) {
         case actionTypes.GET_BUS_ROUTE_PROG:
-            return { ...state, isProgress_db: true };
+            return { ...state, isProgress_db: true, busRoute: null, busName: "" };
         case actionTypes.GET_BUS_ROUTE_SUCC:
-            return { ...state, isProgress_db: false, bus_name: action.payload.bus_name, bus_route: action.payload.route }
+            return { ...state, isProgress_db: false, busName: action.payload.bus_name, busRoute: action.payload.route }
         case actionTypes.GET_BUS_ROUTE_FAIL:
             return { ...state, isProgress_db: false, isError_db: true, errorText_db: action.payload }
 
         case actionTypes.CLEAR_ROUTE:
-            return { ...state, bus_name: "", bus_route: [] };
+            return { ...state, busName: "", busRoute: [] };
 
         case actionTypes.CLEAR_ERROR:
             return { ...state, isError_db: false, errorText_db: "" };

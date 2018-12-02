@@ -101,7 +101,7 @@ class Settings extends Component {
 
                         </Right>
                     </ListItem>
-                    <ListItem>
+                    {/* <ListItem>
                         <Body>
                             <Text style={{ fontFamily: "OpenSans-SemiBold" }} >Update profile</Text>
                             <Text note style={{ fontFamily: "OpenSans-Light" }} >update your name and CMSID </Text>
@@ -110,7 +110,7 @@ class Settings extends Component {
                             <Ionicons name="ios-arrow-dropright" size={25} color="#2FCC71" />
 
                         </Right>
-                    </ListItem>
+                    </ListItem> */}
                     <ListItem>
                         <Body>
                             <Text style={{ fontFamily: "OpenSans-SemiBold" }} >About</Text>
