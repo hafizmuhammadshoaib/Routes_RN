@@ -17,6 +17,7 @@ import { connect } from "react-redux";
 import DBActions from '../../Store/Actions/DBActions/DBActions';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import SocketIOClient from 'socket.io-client';
+import firebase from "react-native-firebase";
 const drawerDataArray = [{ name: "Live Tracking", icon: require("../../../assets/images/gps-route.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("liveTracking"); } },
 { name: "Bus Route", icon: require("../../../assets/images/route.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("busRoute") } },
 { name: "Bus Info", icon: require("../../../assets/images/info.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("busInfo") } },
@@ -65,7 +66,7 @@ class MyMapView extends React.Component {
         ref = this;
         this.map = null;
         console.log(this.props, "props on map")
-        this.socket = SocketIOClient("http://192.168.1.104:3000", {
+        this.socket = SocketIOClient("http://192.168.1.101:8080", {
             reconnection: true,
             reconnectionDelay: 1000,
             reconnectionDelayMax: 5000,
@@ -92,8 +93,10 @@ class MyMapView extends React.Component {
         };
         this.drawer = null;
 
+        firebase.messaging().subscribeToTopic(`/topics/${this.props.user && this.props.user._id}`);
+
     }
-   
+
 
     setRegion(region) {
         if (this.state.ready) {
@@ -221,6 +224,7 @@ class MyMapView extends React.Component {
         });
     }
     signOut = () => {
+        firebase.messaging().unsubscribeFromTopic(`/topics/${this.props.user && this.props.user._id}`)
         this.props.signOut();
         this.props.setUnmountFlag(false);
         AsyncStorage.clear().then(() => {

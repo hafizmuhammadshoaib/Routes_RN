@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 import { Provider } from "react-redux";
+import firebase from "react-native-firebase"
 
 import { store } from './src/Store/index';
 import SplashScreen from 'react-native-splash-screen';
@@ -29,9 +30,97 @@ import StopLocation from './src/Screens/StopLocation/StopLocation';
 import Notifications from './src/Screens/Notifications/Notifications';
 
 export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.notificationListener = null;
+    this.notificationOpenedListener = null;
+    const channel = new firebase.notifications.Android.Channel('test-channel', 'Test Channel', firebase.notifications.Android.Importance.Max).setVibrationPattern([500]).setDescription("all")
+    // firebase.notifications().android.createChannel(channel);
+    this.channel = channel;
+  }
   componentDidMount() {
     SplashScreen.hide();
   }
+  createNotificationListeners = () => {
+    this.notificationListener = firebase.notifications().onNotification((notification) => {
+      // const { title, body } = notification;
+      // alert("create notification listener" + JSON.stringify(notification));
+      console.log("notification listener", notification)
+      console.log("notification body", notification.body)
+      // const notification = new firebase.notifications.Notification()
+      //   .setNotificationId(notification.notificationId)
+      //   .setTitle(notification.title)
+      //   .setBody(notification.body)
+
+      // notification.android.defaults = ["Vibrate"];
+      // notification.android.setVibrate=
+      // notification.android.setChannelId("test")
+      //   .setBody(notification.body)
+      //   .setTitle(notification.title)
+      notification.android.setChannelId(this.channel.channelId).setBody(notification.body).setTitle(notification.title)
+
+
+
+      firebase.notifications().displayNotification(notification);
+    });
+    // firebase.notifications().android.createChannel(this.notification);
+    this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpened) => {
+      // alert("notification opened listener" + JSON.stringify(notificationOpened.notification.title)+JSON.stringify(notificationOpened.notification));
+      console.log(notificationOpened.notification);
+      alert(notificationOpened.notification.body);
+      alert(notificationOpened.notification.title);
+
+
+    })
+
+    firebase.notifications().getInitialNotification()
+      .then(notificationOpen => {
+        if (notificationOpen) {
+          // const { title, body } = notificationOpen.notification;
+          // this.showAlert(title, body);
+          alert("initial notification" + JSON.stringify(notificationOpen.notification.body))
+        }
+      })
+      .catch(error => {
+        alert("intial notification error" + JSON.stringify(error));
+      });
+
+    this.messageListener = firebase.messaging().onMessage((message) => {
+      alert("message listener" + JSON.stringify(message));
+    });
+  }
+  checkPermission = () => {
+    firebase.messaging().hasPermission()
+      .then(enabled => {
+        if (enabled) {
+          this.getToken();
+        } else {
+          this.requsetPermission();
+        }
+      })
+      .catch(error => {
+        alert("permission error" + JSON.stringify(error));
+      })
+  }
+  requsetPermission = () => {
+    firebase.messaging().requestPermission()
+      .then(() => {
+        this.getToken();
+      })
+      .catch(error => {
+        console.log("error in requestPermission");
+      })
+  }
+  async getToken() {
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+    if (!fcmToken) {
+      fcmToken = await firebase.messaging().getToken();
+      if (fcmToken) {
+        await AsyncStorage.setItem('fcmToken', fcmToken);
+      }
+    }
+  }
+
   render() {
     return (
       <Provider store={store} >

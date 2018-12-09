@@ -16,9 +16,9 @@ import { connect } from "react-redux";
 import DBActions from '../../Store/Actions/DBActions/DBActions';
 import Ionicons from "react-native-vector-icons/Ionicons";
 const dataArray = [
-    { title: "HU 01" },
-    { title: "HU 02" },
-    { title: "HU 03" }
+    { title: "HU-01" },
+    { title: "HU-02" },
+    { title: "HU-03" }
 ];
 const mapStateToProps = state => {
     console.log(state);

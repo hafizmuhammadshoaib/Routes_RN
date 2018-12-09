@@ -1,7 +1,7 @@
 import actionTypes from "../../actionTypes";
 import { Observable } from 'rxjs';
 import service from "../../../service/http";
-const BASE_URL = "http://192.168.1.105:8080"
+const BASE_URL = "http://192.168.1.101:8080"
 
 export default class Auth {
     static signIn(action$) {
