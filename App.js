@@ -40,6 +40,12 @@ export default class App extends Component {
   }
   componentDidMount() {
     SplashScreen.hide();
+    this.checkPermission();
+    this.createNotificationListeners();
+  }
+  componentWillUnmount() {
+    this.notificationListener();
+    this.notificationOpenedListener();
   }
   createNotificationListeners = () => {
     this.notificationListener = firebase.notifications().onNotification((notification) => {
