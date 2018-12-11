@@ -130,8 +130,8 @@ class MyMapView extends React.Component {
     };
     trackLocation = (object) => {
 
-        this.setState({ curr_location: true, curr_location_bus_name: object.bus_name, curr_location_lat: object.lat, curr_location_lng: object.lng });
-        this.setRegion({ latitude: object.lat, longitude: object.lng, latitudeDelta: LATITUDE_DELTA, longitudeDelta: LONGITUDE_DELTA, longitudeDelta: LONGITUDE_DELTA, })
+        this.setState({ curr_location: true, curr_location_bus_name: object.bus_name, curr_location_lat: Number(object.lat), curr_location_lng: Number(object.lng) });
+        this.setRegion({ latitude: Number(object.lat), longitude: Number(object.lng), latitudeDelta: LATITUDE_DELTA, longitudeDelta: LONGITUDE_DELTA, longitudeDelta: LONGITUDE_DELTA, })
 
     }
     static navigationOptions = ({ navigation, }) => {
@@ -300,7 +300,7 @@ class MyMapView extends React.Component {
 
                         {/* {children && children || null} */}
                         {this.state.curr_location && <MapView.Marker
-                            coordinate={{ "latitude": this.state.curr_location_lat, "longitude": this.state.curr_location_lng }}
+                            coordinate={{ "latitude": Number(this.state.curr_location_lat), "longitude": Number(this.state.curr_location_lng) }}
                             title={this.state.curr_location_bus_name} />}
                         {/* <MapView.Polyline
                             coordinates={this.state.coords}
