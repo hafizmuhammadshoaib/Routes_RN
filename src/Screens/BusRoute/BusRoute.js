@@ -53,7 +53,7 @@ class BusRoute extends Component {
     }
     static navigationOptions = {
         headerTitle: 'Bus Route',
-        headerTitleStyle: { fontFamily: "OpenSans-Regular", fontWeight: null }
+        headerTitleStyle: { fontFamily: "OpenSans-Regular", fontWeight: null,color:"#fff" }
     };
     getDirection = (bus_name) => {
         this.props.getBusRoute(this.props.token, bus_name);

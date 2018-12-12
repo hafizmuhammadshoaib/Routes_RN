@@ -6,7 +6,7 @@ import {
     PermissionsAndroid, View, Dimensions, Image, FlatList, Text, TouchableOpacity, AsyncStorage
 } from 'react-native';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { Fab, Button, Icon, Drawer } from "native-base";
+import { Fab, Button, Icon, Drawer, Spinner } from "native-base";
 const { height, width, fontScale, scale } = Dimensions.get("window");
 import MapView from 'react-native-maps';
 import Polyline from '@mapbox/polyline';
@@ -41,6 +41,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         setStopLocation: (token, email, lat, lng) => { dispatch(DBActions.setStopLocation(token, email, lat, lng)) },
+        callSuccessFlagFalse: () => { dispatch(DBActions.callSuccessFlag()) },
+
     };
 };
 const _storeData = async (user) => {
@@ -84,6 +86,7 @@ class StopLocation extends Component {
 
                 _storeData(props.user);
                 props.navigation.goBack();
+                props.callSuccessFlagFalse();
 
             } catch (error) {
                 // Error saving data
@@ -197,6 +200,9 @@ class StopLocation extends Component {
 
                 </MapView>
                 <Image source={require("../../../assets/images/map-marker.png")} style={{ width: width / 8, height: width / 8, zIndex: 10, position: "absolute", borderRadius: width / 8, top: height / 2.25, left: width / 2.3, alignItems: "center", justifyContent: "center" }} resizeMode="contain" />
+                {
+                    this.props.isProgress && <Spinner style={{ position: "absolute", top: height / 1.8, left: width / 1.8 }} />
+                }
                 {!this.state.mapMoving && <View style={{ backgroundColor: "#fff", height: height / 6, width: width / 1.5, position: "absolute", top: height / 1.4, left: width / 5, justifyContent: "center", alignItems: "center" }}  >
                     <Button onPress={this.confirmHandler} style={{ alignSelf: "center", width: width / 2, backgroundColor: "#2FCC71", justifyContent: "center" }} ><Text style={{ fontFamily: "OpenSans-Regular", color: "#fff" }} >Confirm</Text></Button>
                 </View>}

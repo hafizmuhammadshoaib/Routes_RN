@@ -57,6 +57,10 @@ class Settings extends Component {
         this.state = { showListOfBus: false }
 
     }
+    static navigationOptions = {
+        headerTitle: 'Live Tracking',
+        headerTitleStyle: { fontFamily: "OpenSans-Regular", fontWeight: null, color: "#fff" }
+    };
     static getDerivedStateFromProps = (props, state) => {
         console.log("user", props.user)
         if (props.callSuccess && props.navigation.isFocused()) {

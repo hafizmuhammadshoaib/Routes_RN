@@ -16,6 +16,7 @@
     "native-base": "^2.8.0",
     "react": "16.4.1",
     "react-native": "0.56.0",
+    "react-native-communications": "^2.2.1",
     "react-native-firebase": "^5.1.1",
     "react-native-maps": "^0.21.0",
     "react-native-splash-screen": "^3.0.6",
@@ -27,6 +28,7 @@
     "redux-observable": "^0.19.0",
     "rxjs": "^5.5.1",
     "socket.io-client": "^2.1.1",
+    "toggle-switch-react-native": "^2.0.2",
     "validator": "^10.8.0"
   },
   "devDependencies": {

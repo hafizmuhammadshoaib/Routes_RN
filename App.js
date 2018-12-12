@@ -9,7 +9,8 @@ import {
   Platform,
   StyleSheet,
   Text,
-  View
+  View,
+  StatusBar
 } from 'react-native';
 
 import { Provider } from "react-redux";
@@ -27,7 +28,7 @@ import BusRoute from './src/Screens/BusRoute/BusRoute';
 import LiveTracking from './src/Screens/Live Tracking/LiveTracking';
 import Settings from "./src/Screens/Settings/Settings";
 import StopLocation from './src/Screens/StopLocation/StopLocation';
-import Notifications from './src/Screens/Notifications/Notifications';
+import NotificationsView from './src/Screens/NotificationsView/NotificationsView';
 
 export default class App extends Component {
   constructor(props) {
@@ -131,6 +132,7 @@ export default class App extends Component {
     return (
       <Provider store={store} >
         <View style={{ flex: 1 }} >
+          <StatusBar backgroundColor={"#2fcc71"} />
 
           <RootStack />
 
@@ -148,13 +150,14 @@ const RootStack = createStackNavigator({
   liveTracking: LiveTracking,
   settings: Settings,
   stopLocation: StopLocation,
-  notifications: Notifications
+  notificationsView: NotificationsView
 }, {
     initialRouteName: "signIn",
     navigationOptions: {
 
       headerTitle: 'Routes',
-      headerTitleStyle: { fontFamily: "OpenSans-Bold", fontWeight: null },
+      headerTitleStyle: { fontFamily: "OpenSans-SemiBold", fontWeight: null, color: "#fff" },
+      headerStyle: { backgroundColor: "#3ae374" }
 
     }
 

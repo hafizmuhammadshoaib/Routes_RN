@@ -48,7 +48,7 @@ class LiveTracking extends Component {
     }
     static navigationOptions = {
         headerTitle: 'Live Tracking',
-        headerTitleStyle: { fontFamily: "OpenSans-Regular", fontWeight: null }
+        headerTitleStyle: { fontFamily: "OpenSans-Regular", fontWeight: null,color:"#fff" }
     };
     render() {
         return (

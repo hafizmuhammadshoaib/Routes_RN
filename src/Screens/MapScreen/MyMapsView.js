@@ -8,7 +8,7 @@ import {
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Fab, Button, Icon, Drawer } from "native-base";
 const { height, width, fontScale, scale } = Dimensions.get("window");
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import Polyline from '@mapbox/polyline';
 import Feather from "react-native-vector-icons/Feather";
 import busRoute from "./busroutes";
@@ -21,7 +21,8 @@ import firebase from "react-native-firebase";
 const drawerDataArray = [{ name: "Live Tracking", icon: require("../../../assets/images/gps-route.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("liveTracking"); } },
 { name: "Bus Route", icon: require("../../../assets/images/route.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("busRoute") } },
 { name: "Bus Info", icon: require("../../../assets/images/info.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("busInfo") } },
-{ name: "Notification", icon: require("../../../assets/images/notification.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("notifications") } },
+{ name: "Notification", icon: require("../../../assets/images/notification.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("notificationsView") } },
+{ name: "ETA", icon: require("../../../assets/images/clockwise.png"), },
 { name: "Settings", icon: require("../../../assets/images/settings-2.png"), route: (ref) => { ref.closeDrawer(); ref.props.navigation.navigate("settings") } }];
 let ref;
 const mapStateToProps = state => {
@@ -66,7 +67,7 @@ class MyMapView extends React.Component {
         ref = this;
         this.map = null;
         console.log(this.props, "props on map")
-        this.socket = SocketIOClient("http://192.168.1.101:8080", {
+        this.socket = SocketIOClient("https://warm-thicket-69046.herokuapp.com", {
             reconnection: true,
             reconnectionDelay: 1000,
             reconnectionDelayMax: 5000,
@@ -151,7 +152,7 @@ class MyMapView extends React.Component {
         return {
 
             headerLeft: (
-                <TouchableOpacity onPress={navigation.getParam("openDrawer")} style={{ marginLeft: 12, backgroundColor: "transparent" }} ><Icon name="menu" style={{ color: "#000" }} /></TouchableOpacity>
+                <TouchableOpacity onPress={navigation.getParam("openDrawer")} style={{ marginLeft: 12, backgroundColor: "transparent" }} ><Icon name="menu" style={{ color: "#fff" }} /></TouchableOpacity>
             ),
         }
 
@@ -302,6 +303,7 @@ class MyMapView extends React.Component {
                         {this.state.curr_location && <MapView.Marker
                             coordinate={{ "latitude": Number(this.state.curr_location_lat), "longitude": Number(this.state.curr_location_lng) }}
                             title={this.state.curr_location_bus_name} />}
+
                         {/* <MapView.Polyline
                             coordinates={this.state.coords}
                             strokeWidth={10}
@@ -311,7 +313,7 @@ class MyMapView extends React.Component {
                             strokeWidth={10}
                             strokeColor="cyan" /> */}
 
-
+                        {this.props.user && this.props.user.userInfo.stopLocation.lat > 0 && <Marker title={`Your Stop`} coordinate={{ latitude: this.props.user && Number(this.props.user.userInfo.stopLocation.lat), longitude: this.props.user && Number(this.props.user.userInfo.stopLocation.lng) }} image={require("../../../assets/images/location-pin.png")} />}
 
                     </MapView>
                     {/* </View> */}

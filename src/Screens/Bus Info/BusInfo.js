@@ -15,6 +15,7 @@ import AuthActions from '../../Store/Actions/AuthActions/AuthActions';
 import { connect } from "react-redux";
 import DBActions from '../../Store/Actions/DBActions/DBActions';
 import Ionicons from "react-native-vector-icons/Ionicons";
+import Communications from "react-native-communications";
 const dataArray = [
     { title: "HU 01", content: "Lorem ipsum dolor sit amet" },
     { title: "HU 02", content: "Lorem ipsum dolor sit amet" },
@@ -56,7 +57,7 @@ class BusInfo extends Component {
 
     static navigationOptions = {
         headerTitle: 'Bus Information',
-        headerTitleStyle: { fontFamily: "OpenSans-Regular", fontWeight: null }
+        headerTitleStyle: { fontFamily: "OpenSans-Regular", fontWeight: null,color:"#fff" }
     };
 
     _renderHeader = (title, expanded) => {
@@ -97,7 +98,7 @@ class BusInfo extends Component {
                         <Text style={{ marginBottom: 5, fontFamily: "OpenSans-Regular" }} >{`Stop Info: ${content.stop_info}\n`}</Text>
                     </View>
                 </View>
-                <Button style={{ backgroundColor: "#fff", width: width * 0.95, justifyContent: "center", }} >
+                <Button onPress={() => Communications.phonecall(content.bus_driver_phone, true)} style={{ backgroundColor: "#fff", width: width * 0.95, justifyContent: "center", }} >
                     <Text style={{ fontFamily: "OpenSans-Regular" }} >Call Driver</Text>
                     <Image source={require("../../../assets/images/call.png")} style={{ width: width / 15, height: width / 15, marginLeft: 5 }} resizeMode="contain" />
                 </Button>

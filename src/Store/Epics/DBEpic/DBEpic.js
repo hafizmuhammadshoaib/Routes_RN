@@ -4,7 +4,7 @@ import FirebaseDB from '../../Firebase/firebaseDB';
 import DBActions from '../../Actions/DBActions/DBActions';
 import service from "../../../service/http";
 import { retry } from 'rxjs/operator/retry';
-const BASE_URL = "http://192.168.1.101:8080"
+const BASE_URL = "https://warm-thicket-69046.herokuapp.com"
 
 
 
