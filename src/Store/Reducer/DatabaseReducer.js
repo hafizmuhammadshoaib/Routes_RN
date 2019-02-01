@@ -4,6 +4,7 @@ import { startWith } from 'rxjs/operator/startWith';
 
 let INITIAL_STATE = {
     isProgress_db: false,
+    isProgressForDateAndTime: false,
     isError_db: false,
     errorText_db: "",
     busName: "",
@@ -13,6 +14,8 @@ let INITIAL_STATE = {
     busInfoHasPages: null,
     liveTrackCoord: null,
     allBusInfo: null,
+    etaTime: null,
+    distance: null
 
 
 }
@@ -20,11 +23,11 @@ let INITIAL_STATE = {
 export default function dbReducer(state = INITIAL_STATE, action) {
     switch (action.type) {
         case actionTypes.GET_BUS_ROUTE_PROG:
-            return { ...state, isProgress_db: true, busRoute: null, busName: "" };
+            return { ...state, isProgress_db: true, busRoute: null, busName: "", };
         case actionTypes.GET_BUS_ROUTE_SUCC:
-            return { ...state, isProgress_db: false, busName: action.payload.bus_name, busRoute: action.payload.route }
+            return { ...state, isProgress_db: false, busName: action.payload.bus_name, busRoute: action.payload.route, }
         case actionTypes.GET_BUS_ROUTE_FAIL:
-            return { ...state, isProgress_db: false, isError_db: true, errorText_db: action.payload }
+            return { ...state, isProgress_db: false, isError_db: true, errorText_db: action.payload, }
 
         case actionTypes.CLEAR_ROUTE:
             return { ...state, busName: "", busRoute: [] };
@@ -57,6 +60,13 @@ export default function dbReducer(state = INITIAL_STATE, action) {
             return { ...state, isProgress_db: false, allBusInfo: action.payload };
         case actionTypes.GET_ALL_BUS_INFO_FAIL:
             return { ...state, isProgress_db: false, isError_db: true, errorText_db: action.payload }
+
+        case actionTypes.GET_TIME_AND_DISTANCE_PROG:
+            return { ...state, isProgressForDateAndTime: true };
+        case actionTypes.TIME_AND_DISTANCE_SUCC:
+            return { ...state, isProgressForDateAndTime: false, etaTime: (action.payload.duration.value) / 60, distance: (action.payload.distance.value) / 1000 }
+        case actionTypes.GET_TIME_AND_DISTANCE_FAIL:
+            return { ...state, isProgressForDateAndTime: false, isError_db: true, errorText_db: action.payload }
 
         default:
             return state;

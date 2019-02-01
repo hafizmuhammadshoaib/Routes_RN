@@ -26,7 +26,9 @@ const mapStateToProps = state => {
         token: state.authReducer["token"],
         busRoute: state.dbReducer["busRoute"],
         busName: state.dbReducer["busName"],
-        allBusInfo: state.dbReducer["allBusInfo"]
+        allBusInfo: state.dbReducer["allBusInfo"],
+        etaTime: state.dbReducer["etaTime"],
+        distance: state.dbReducer["distance"]
 
 
 
@@ -53,7 +55,7 @@ class BusRoute extends Component {
     }
     static navigationOptions = {
         headerTitle: 'Bus Route',
-        headerTitleStyle: { fontFamily: "OpenSans-Regular", fontWeight: null,color:"#fff" }
+        headerTitleStyle: { fontFamily: "OpenSans-Regular", fontWeight: null, color: "#fff" }
     };
     getDirection = (bus_name) => {
         this.props.getBusRoute(this.props.token, bus_name);
@@ -75,19 +77,20 @@ class BusRoute extends Component {
 
         }
 
+
         return null;
     }
-    getDistanceAndTime = (distance, time) => {
-        this.setState({ distance: Math.floor(distance / 1000), time: Math.floor(time / 60) })
-    }
+    // getDistanceAndTime = (distance, time) => {
+    //     this.setState({ distance: Math.floor(distance / 1000), time: Math.floor(time / 60) })
+    // }
 
     render() {
         return (
             <View style={{ flex: 1 }} >
-                <FlatList data={dataArray}
+                <FlatList data={this.props.allBusInfo && this.props.allBusInfo}
                     renderItem={({ item, index }) => (
                         <ListItem onPress={() => this.getDirection(item.bus_name)} style={{ justifyContent: "space-between" }} >
-                            <Text style={{ fontFamily: "OpenSans-Regular", fontSize: fontScale * 18 }} >{item.title}</Text>
+                            <Text style={{ fontFamily: "OpenSans-Regular", fontSize: fontScale * 18 }} >{item.bus_name}</Text>
                             <Ionicons name="ios-arrow-dropright" size={25} color="#2FCC71" />
                         </ListItem>
 
@@ -98,11 +101,11 @@ class BusRoute extends Component {
                 <Modal presentationStyle={"fullscreen"} visible={this.state.showModal} onRequestClose={() => this.setState({ showModal: false })} >
                     <View>
                         <Text style={{ fontFamily: "OpenSans-SemiBold", color: "#000" }}  >Bus Name:{this.props.busName}</Text>
-                        <Text style={{ fontFamily: "OpenSans-SemiBold", color: "#000" }}  >Estimated Time To Travel: {this.state.time} mins</Text>
-                        <Text style={{ fontFamily: "OpenSans-SemiBold", color: "#000" }} >Total Distance: {this.state.distance} KM's</Text>
+                        <Text style={{ fontFamily: "OpenSans-SemiBold", color: "#000" }}  >Estimated Time To Travel:</Text>{this.props.isProgressForDateAndTime ? <Spinner /> : <Text> {` ${this.props.etaTime} mins`} </Text>}
+                        <Text style={{ fontFamily: "OpenSans-SemiBold", color: "#000" }} >Total Distance:</Text>{this.props.isProgressForDateAndTime ? <Spinner /> : <Text> {` ${this.props.distance} Km's`} </Text>}
                     </View>
                     {this.props.isProgress_db ? <Spinner /> :
-                        !this.props.isError_db && <Map getDistanceAndTime={this.getDistanceAndTime} busRoute={this.props.busRoute} />}
+                        !this.props.isError_db && <Map  busRoute={this.props.busRoute} />}
                     {
                         this.props.isError_db &&
 

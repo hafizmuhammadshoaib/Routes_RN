@@ -64,9 +64,15 @@ export default class DBActions {
             payload: { token: "Bearer " + token, email, busName }
         }
     }
-    static callSuccessFlag(){
-        return{
-            type:actionTypes.CALL_SUCCESS_FLAG_FALSE
+    static callSuccessFlag() {
+        return {
+            type: actionTypes.CALL_SUCCESS_FLAG_FALSE
+        }
+    }
+    static getTimeAndDistance(origin, destination) {
+        return {
+            type: actionTypes.GET_TIME_AND_DISTANCE_PROG,
+            payload: { origin, destination }
         }
     }
 }

@@ -28,7 +28,8 @@ export const rootEpic = combineEpics(
   DBEpic.getLiveTrackInfo,
   DBEpic.setStopLocaiton,
   DBEpic.getAllBusInfo,
-  DBEpic.updateBusName
+  DBEpic.updateBusName,
+  DBEpic.getTimeAndDistance
 );
 
 const epicMiddleware = createEpicMiddleware(rootEpic);

@@ -24,10 +24,10 @@ export default class AuthActions {
             payload: { token, user }
         }
     }
-    static setUnmountFlag(value){
+    static setUnmountFlag(value) {
         return {
-            type:actionTypes.SET_UNMOUNT_FLAG,
-            payload:value
+            type: actionTypes.SET_UNMOUNT_FLAG,
+            payload: value
         }
     }
     static signOut() {
