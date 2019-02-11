@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "758209820726",
-    "firebase_url": "https://fixs-b28a5.firebaseio.com",
-    "project_id": "fixs-b28a5",
-    "storage_bucket": "fixs-b28a5.appspot.com"
+    "project_number": "581941512142",
+    "firebase_url": "https://routes-fyp.firebaseio.com",
+    "project_id": "routes-fyp",
+    "storage_bucket": "routes-fyp.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:758209820726:android:27e23e89448317d8",
+        "mobilesdk_app_id": "1:581941512142:android:27e23e89448317d8",
         "android_client_info": {
           "package_name": "com.routes"
         }
       },
       "oauth_client": [
         {
-          "client_id": "758209820726-ssuc5s4utri67i3rqkgtjaembob7jcg9.apps.googleusercontent.com",
+          "client_id": "581941512142-cbav4560ff7ojob6pgki80bnf1u8atb5.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB0gAQRO8FM2bTW5TNUyhxLpPA-JlgiGeo"
+          "current_key": "AIzaSyCfX4GVZIcQTeY6vBr6nrmqI75QngoBXso"
         }
       ],
       "services": {

@@ -90,7 +90,8 @@ class MyMapView extends React.Component {
             curr_location: false,
             curr_location_lat: 0,
             curr_location_lng: 0,
-            curr_location_bus_name: ""
+            curr_location_bus_name: "",
+            curr_bus_no_of_students: 0
         };
         this.drawer = null;
 
@@ -135,6 +136,9 @@ class MyMapView extends React.Component {
         this.setRegion({ latitude: Number(object.lat), longitude: Number(object.lng), latitudeDelta: LATITUDE_DELTA, longitudeDelta: LONGITUDE_DELTA, longitudeDelta: LONGITUDE_DELTA, })
 
     }
+    currentNumberOfStudents = (object) => {
+        this.setState({ curr_bus_no_of_students: object && object.numberOfStudents })
+    }
     static navigationOptions = ({ navigation, }) => {
 
         console.log("open drawer function", navigation.getParam("openDrawer"));
@@ -145,6 +149,7 @@ class MyMapView extends React.Component {
             ref && ref.socket.removeAllListeners();
             console.log("event name inside if", eventName)
             ref && ref.socket.on(eventName, ref.trackLocation)
+            ref && ref.socket.on(`att${eventName}`, ref.currentNumberOfStudents)
         }
 
 
@@ -302,7 +307,7 @@ class MyMapView extends React.Component {
                         {/* {children && children || null} */}
                         {this.state.curr_location && <MapView.Marker
                             coordinate={{ "latitude": Number(this.state.curr_location_lat), "longitude": Number(this.state.curr_location_lng) }}
-                            title={this.state.curr_location_bus_name} />}
+                            title={`${this.state.curr_location_bus_name} Number Of Students:${this.state.curr_bus_no_of_students}`} />}
 
                         {/* <MapView.Polyline
                             coordinates={this.state.coords}
