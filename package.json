@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "sed -i '' '/Google.*\\.[h|m]/d' node_modules/react-native-maps/lib/ios/AirMaps.xcodeproj/project.pbxproj"
   },
   "rnpm": {
     "assets": [
