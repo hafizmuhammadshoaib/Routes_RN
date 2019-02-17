@@ -6,8 +6,8 @@
  */
 
 #import "AppDelegate.h"
-@import Firebase;
- #import <GoogleMaps/GoogleMaps.h>
+#import <Firebase.h>
+#import <GoogleMaps/GoogleMaps.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 
@@ -15,6 +15,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [FIRApp configure];
   NSURL *jsCodeLocation;
 
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
@@ -30,7 +31,6 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
-  [FIRApp configure];
   [GMSServices provideAPIKey:@"AIzaSyDDmyFwVLZ7Fys0sWTDMxa7h_Dyy79BXuM"];
   return YES;
 }
