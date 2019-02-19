@@ -98,7 +98,7 @@ class BusRoute extends Component {
 
                 />
 
-                <Modal presentationStyle={"fullscreen"} visible={this.state.showModal} onRequestClose={() => this.setState({ showModal: false })} >
+                <Modal presentationStyle={"fullScreen"} visible={this.state.showModal} onRequestClose={() => this.setState({ showModal: false })} >
                     <View>
                         <Text style={{ fontFamily: "OpenSans-SemiBold", color: "#000" }}  >Bus Name:{this.props.busName}</Text>
                         <Text style={{ fontFamily: "OpenSans-SemiBold", color: "#000" }}  >Estimated Time To Travel:</Text>{this.props.isProgressForDateAndTime ? <Spinner /> : <Text> {` ${this.props.etaTime} mins`} </Text>}

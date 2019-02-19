@@ -3,7 +3,7 @@ import {
     Alert,
     Platform,
     StyleSheet,
-    PermissionsAndroid, View, Dimensions, Image, FlatList, Text, TouchableOpacity, AsyncStorage
+    PermissionsAndroid, View, Dimensions, Image, FlatList, Text, TouchableOpacity, AsyncStorage,
 } from 'react-native';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Fab, Button, Icon, Drawer } from "native-base";
@@ -109,7 +109,12 @@ class MyMapView extends React.Component {
 
     componentDidMount() {
         console.log('Component did mount');
-        this.requestPermission();
+        if (Platform.OS == "android")
+            this.requestPermission();
+        else
+            this.getCurrentPosition();
+        this.setRegion({ latitude: Number("24.904856"), longitude: Number("67.078189"), latitudeDelta: LATITUDE_DELTA, longitudeDelta: LONGITUDE_DELTA, longitudeDelta: LONGITUDE_DELTA, })
+
         // this.getDirections();
         // this.props.getBusRoute(this.props.token, "HU_2");
         this.props.navigation.setParams({ "openDrawer": this.openDrawer });

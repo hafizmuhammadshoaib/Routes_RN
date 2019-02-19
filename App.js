@@ -17,7 +17,7 @@ import { Provider } from "react-redux";
 import firebase from "react-native-firebase"
 
 import { store } from './src/Store/index';
-import SplashScreen from 'react-native-splash-screen';
+// import SplashScreen from 'react-native-splash-screen';
 import MapScreen from "./src/Screens/MapScreen/MapScreen";
 import { createStackNavigator } from "react-navigation"
 import MyMapsView from './src/Screens/MapScreen/MyMapsView';
@@ -40,7 +40,7 @@ export default class App extends Component {
     this.channel = channel;
   }
   componentDidMount() {
-    SplashScreen.hide();
+    // SplashScreen.hide();
     this.checkPermission();
     this.createNotificationListeners();
   }

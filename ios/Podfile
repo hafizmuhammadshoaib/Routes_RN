@@ -34,6 +34,7 @@ target 'Routes' do
     # react-native-maps dependencies
     pod 'react-native-maps', path: rn_maps_path
     pod 'Firebase/Core'
+    pod 'Firebase/Messaging'
     pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
     pod 'react-native-google-maps', path: rn_maps_path  # Uncomment this line if you want to support GoogleMaps on iOS
     pod 'GoogleMaps'  # Uncomment this line if you want to support GoogleMaps on iOS
